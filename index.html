@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Forecast</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <h1>🌤 Weather Hub</h1>
+      <p class="subtitle">Your daily weather companion</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Search for a city..." id="city-input">
+        <button id="search-btn">Search</button>
+      </div>
+    </header>
+
+    <!-- Hero Section with Image -->
+    <section class="hero">
+        <img src="C:\Users\HP\Downloads\weather02-512.webp" alt="Description" style="width: 20%; height: auto;">
+    </section>
+
+    <!-- Current Weather Section -->
+    <section id="current-weather" class="weather-section">
+      <h2>Current Weather</h2>
+      <div class="weather-display">
+        <img id="weather-icon" class="weather-icon" alt="Weather icon">
+        <div class="weather-details">
+          <h3 id="city-name">City Name</h3>
+          <p id="temperature" class="large-text">25°C</p>
+          <p id="condition">Sunny</p>
+          <p id="humidity">Humidity: 60%</p>
+          <p id="wind-speed">Wind Speed: 10 km/h</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Forecast Section -->
+    <section id="forecast" class="weather-section">
+      <h2>3-Day Forecast</h2>
+      <div class="forecast-cards">
+        <div class="card">
+          <p class="day">Monday</p>
+          <div class="weather-icon cloud"></div>
+          <p>Min: 18°C</p>
+          <p>Max: 28°C</p>
+        </div>
+        <div class="card">
+          <p class="day">Tuesday</p>
+          <div class="weather-icon rain"></div>
+          <p>Min: 20°C</p>
+          <p>Max: 30°C</p>
+        </div>
+        <div class="card">
+          <p class="day">Wednesday</p>
+          <div class="weather-icon sun"></div>
+          <p>Min: 22°C</p>
+          <p>Max: 32°C</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>© 2025 Weather Hub | Made by Gururaj Hiremath</p>
+    </footer>
+  </div>
+
+  <script>
+    // API key from OpenWeatherMap
+    const apiKey = "69d251cded6f222606fe1e93b3418900"; // Replace with your OpenWeatherMap API Key
+
+    document.getElementById('search-btn').addEventListener('click', function () {
+      const city = document.getElementById('city-input').value;
+
+      if (city) {
+        // Fetch weather data for the entered city
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+
+        fetch(apiUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('City not found');
+            }
+            return response.json();
+          })
+          .then(data => {
+            // Update the weather details on the page
+            document.getElementById('city-name').textContent = data.name;
+            document.getElementById('temperature').textContent = `${data.main.temp}°C`;
+            document.getElementById('condition').textContent = data.weather[0].description;
+            document.getElementById('humidity').textContent = `Humidity: ${data.main.humidity}%`;
+            document.getElementById('wind-speed').textContent = `Wind Speed: ${data.wind.speed} km/h`;
+
+            // Update the weather icon
+            const iconCode = data.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+            document.getElementById('weather-icon').src = iconUrl;
+
+            // Change background color based on weather condition
+            if (data.weather[0].main === "Clear") {
+              document.body.style.backgroundColor = "#f7e9a0"; // Sunny background
+            } else if (data.weather[0].main === "Rain") {
+              document.body.style.backgroundColor = "#a0c8f7"; // Rainy background
+            } else {
+              document.body.style.backgroundColor = "#fff"; // Default background
+            }
+          })
+          .catch(error => {
+            alert(error.message);
+          });
+      } else {
+        alert('Please enter a city name!');
+      }
+    });
+  </script>
+</body>
+</html>
